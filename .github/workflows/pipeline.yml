@@ -111,9 +111,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: terraform-plan
     environment:
-      name: ${{ github.event.inputs.environment }}
-    env:
-      ENV: ${{ github.event.inputs.environment }}
+      name:  ${{ github.ref_name }}
 
     steps:
       - name: Checkout repository
