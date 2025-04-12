@@ -117,6 +117,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Extract Branch Name
+        run: echo "ENV=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
       - name: Generate backend.conf
         run: envsubst < IaC/backend-template.conf > IaC/backend.conf
 
