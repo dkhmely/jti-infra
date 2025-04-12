@@ -72,36 +72,36 @@ jobs:
           name: tfplan
           path: IaC/tfplan
 
-  # terraform-apply:
-  #   name: Terraform Apply
-  #   needs: terraform-plan
-  #   runs-on: ubuntu-latest
-  #   environment:
-  #     name: ${{ github.ref_name }}
+  terraform-apply:
+    name: Terraform Apply
+    needs: terraform-plan
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.ref_name }}
 
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  #     - name: Extract Branch Name
-  #       run: echo "ENV=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+      - name: Extract Branch Name
+        run: echo "ENV=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
 
-  #     - name: Generate backend.conf
-  #       run: envsubst < IaC/backend-template.conf > IaC/backend.conf
+      - name: Generate backend.conf
+        run: envsubst < IaC/backend-template.conf > IaC/backend.conf
 
-  #     - name: Setup Terraform
-  #       uses: hashicorp/setup-terraform@v3
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
 
-  #     - name: Terraform Init
-  #       working-directory: IaC
-  #       run: terraform init -backend-config="backend.conf"
+      - name: Terraform Init
+        working-directory: IaC
+        run: terraform init -backend-config="backend.conf"
 
-  #     - name: Download Plan Artifact
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: tfplan
-  #         path: IaC/
+      - name: Download Plan Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+          path: IaC/
 
-  #     - name: Terraform Apply
-  #       working-directory: IaC
-  #       run: terraform apply -auto-approve tfplan
+      - name: Terraform Apply
+        working-directory: IaC
+        run: terraform apply -auto-approve tfplan
