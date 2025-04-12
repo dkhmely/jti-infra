@@ -8,19 +8,6 @@ on:
       - stage
       - main
 
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: "Environment to destroy"
-        required: true
-        default: dev
-        type: choice
-        options:
-          - dev
-          - qa
-          - stage
-          - main
-
 env:
   TF_VAR_environment: ${{ github.ref_name }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
@@ -121,7 +108,6 @@ jobs:
 
   terraform-destroy:
     name: Terraform Destroy
-    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     environment:
       name: ${{ github.event.inputs.environment }}
