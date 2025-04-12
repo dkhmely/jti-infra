@@ -13,6 +13,17 @@ resource "azurerm_mysql_flexible_server" "sql_server" {
   backup_retention_days  = 7
   private_dns_zone_id    = azurerm_private_dns_zone.private_dns_zone.id
   sku_name               = "B_Standard_B1ms"
+  zone = 3
+
+  storage {
+    auto_grow_enabled = true
+    iops              = 360
+    size_gb           = 20 
+  }
+
+  lifecycle {
+    ignore_changes = [private_dns_zone_id]
+  }
 
   depends_on = [azurerm_private_dns_zone_virtual_network_link.dns_virtual_link]
 }
