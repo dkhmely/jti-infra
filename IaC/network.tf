@@ -1,7 +1,7 @@
 resource "azurerm_subnet" "sql_subnet" {
   name                 = "sql_subnet"
   resource_group_name  = data.azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.vnet.name
+  virtual_network_name = data.azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.0.0/29"]
   delegation {
     name = "delegation"
@@ -17,7 +17,7 @@ resource "azurerm_subnet" "sql_subnet" {
 resource "azurerm_subnet" "webapp_subnet" {
   name                 = "webapp_subnet"
   resource_group_name  = data.azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.vnet.name
+  virtual_network_name = data.azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.0.8/29"]
   delegation {
     name = "fs"
@@ -33,7 +33,7 @@ resource "azurerm_subnet" "webapp_subnet" {
 resource "azurerm_subnet" "pep_subnet" {
   name                 = "mysql-pep-subnet"
   resource_group_name  = data.azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.vnet.name
+  virtual_network_name = data.azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.0.16/29"]
 }
 
@@ -45,7 +45,7 @@ resource "azurerm_private_dns_zone" "private_dns_zone" {
 resource "azurerm_private_dns_zone_virtual_network_link" "dns_virtual_link" {
   name                  = "${var.application}-${var.env}-mysql-vnet-link"
   private_dns_zone_name = azurerm_private_dns_zone.private_dns_zone.name
-  virtual_network_id    = azurerm_virtual_network.vnet.id
+  virtual_network_id    = data.azurerm_virtual_network.vnet.id
   resource_group_name   = data.azurerm_resource_group.rg.name
 }
 
