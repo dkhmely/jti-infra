@@ -1,0 +1,73 @@
+name: Deploy Landing Zone to Azure
+
+on:
+  push:
+    branches:
+      - dev
+      - qa
+      - stage
+      - main
+
+env:
+  TF_VAR_environment: ${{ github.ref_name }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+  ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+  ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+jobs:
+  lint:
+    name: Terraform Validate & Format
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Format Check
+        working-directory: IaC
+        run: terraform fmt -check -recursive
+
+      - name: Terraform Init (No backend)
+        working-directory: IaC
+        run: terraform init -backend=false -input=false -upgrade
+
+      - name: Terraform Validate
+        working-directory: IaC
+        run: terraform validate
+
+  terraform-plan:
+    name: Terraform Plan
+    needs: lint
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract Branch Name
+        run: echo "ENV=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+      - name: Generate backend.conf
+        run: envsubst < IaC/backend-template.conf > IaC/backend.conf
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        working-directory: IaC
+        run: terraform init -backend-config="backend.conf"
+
+      - name: Terraform Plan
+        working-directory: IaC
+        run: terraform plan -out=tfplan -var="env=${{ env.ENV }}"
+
+      - name: Upload Plan Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: IaC/tfplan
