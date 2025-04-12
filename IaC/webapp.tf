@@ -20,7 +20,7 @@ resource "azurerm_linux_web_app" "app" {
   app_settings = {
     "DB_HOST" = "${azurerm_mysql_flexible_server.sql_server.name}.mysql.database.azure.com"
     "DB_USER" = "${var.db_user_prefix}${var.env}user"
-    "DB_PASS" = data.azurerm_key_vault_secret.db_password.value
+    "DB_PASS" = "@Microsoft.KeyVault(SecretUri=https://${data.azurerm_key_vault.kv.name}.vault.azure.net/secrets/${azurerm_key_vault_secret.secret.name}/)"
     "DB_NAME" = "${var.application}"
     "DB_PORT" = 3306
   }

@@ -47,10 +47,6 @@ resource "azurerm_private_dns_zone_virtual_network_link" "dns_virtual_link" {
   private_dns_zone_name = azurerm_private_dns_zone.private_dns_zone.name
   virtual_network_id    = data.azurerm_virtual_network.vnet.id
   resource_group_name   = data.azurerm_resource_group.rg.name
-
-  lifecycle {
-    ignore_changes = [private_service_connection]
-  }
 }
 
 resource "azurerm_private_endpoint" "mysql_private_endpoint" {
