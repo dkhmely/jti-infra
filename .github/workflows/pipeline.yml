@@ -8,6 +8,19 @@ on:
       - stage
       - main
 
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to destroy"
+        required: true
+        default: dev
+        type: choice
+        options:
+          - dev
+          - qa
+          - stage
+          - main
+
 env:
   TF_VAR_environment: ${{ github.ref_name }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
@@ -105,3 +118,30 @@ jobs:
       - name: Terraform Apply
         working-directory: IaC
         run: terraform apply -auto-approve tfplan
+
+  terraform-destroy:
+    name: Terraform Destroy
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.environment }}
+    env:
+      ENV: ${{ github.event.inputs.environment }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate backend.conf
+        run: envsubst < IaC/backend-template.conf > IaC/backend.conf
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        working-directory: IaC
+        run: terraform init -backend-config="backend.conf"
+
+      - name: Terraform Destroy
+        working-directory: IaC
+        run: terraform destroy -auto-approve -var="env=${{ env.ENV }}"
