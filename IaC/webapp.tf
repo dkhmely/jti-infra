@@ -16,7 +16,12 @@ resource "azurerm_linux_web_app" "app" {
     type = "SystemAssigned"
   }
 
-  site_config {}
+  site_config {
+    container_registry_use_managed_identity = true
+    use_32_bit_worker                       = true
+    always_on                               = false
+  }
+
   app_settings = {
     "DB_HOST" = "${azurerm_mysql_flexible_server.sql_server.name}.mysql.database.azure.com"
     "DB_USER" = "${var.db_user_prefix}${var.env}user"
