@@ -8,7 +8,7 @@ resource "azurerm_subnet" "sql_subnet" {
     service_delegation {
       name = "Microsoft.DBforMySQL/flexibleServers"
       actions = [
-       "Microsoft.Network/virtualNetworks/subnets/action"
+        "Microsoft.Network/virtualNetworks/subnets/action"
       ]
     }
   }
@@ -34,7 +34,7 @@ resource "azurerm_subnet" "pep_subnet" {
   name                 = "mysql-pep-subnet"
   resource_group_name  = data.azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = ["10.0.0.16/29"] 
+  address_prefixes     = ["10.0.0.16/29"]
 }
 
 resource "azurerm_private_dns_zone" "private_dns_zone" {
@@ -53,7 +53,7 @@ resource "azurerm_private_endpoint" "mysql_private_endpoint" {
   name                = "${var.application}-${var.env}-mysql-pep"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
-  subnet_id           = azurerm_subnet.pep_subnet.id 
+  subnet_id           = azurerm_subnet.pep_subnet.id
 
   private_service_connection {
     name                           = "${var.application}-${var.env}-mysql-psc"

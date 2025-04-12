@@ -18,7 +18,7 @@ resource "azurerm_mysql_flexible_server" "sql_server" {
 }
 
 resource "azurerm_mysql_flexible_database" "db" {
-  name                = "${var.application}"
+  name                = var.application
   resource_group_name = data.azurerm_resource_group.rg.name
   server_name         = azurerm_mysql_flexible_server.sql_server.name
   charset             = "utf8"
