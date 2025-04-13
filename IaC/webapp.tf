@@ -6,7 +6,7 @@ module "webapp" {
 
   db_host                = "${azurerm_mysql_flexible_server.sql_server.name}.mysql.database.azure.com"
   db_user                = "${var.db_user_prefix}${var.env}user"
-  db_password_secret_uri = "https://${azurerm_key_vault.kv.name}.vault.azure.net/secrets/${azurerm_key_vault_secret.secret.name}/"
+  db_password_secret_uri = "https://${data.azurerm_key_vault.kv.name}.vault.azure.net/secrets/${azurerm_key_vault_secret.secret.name}/"
   db_name                = var.application
   subnet_id              = azurerm_subnet.webapp_subnet.id
   #vnet_integration       = true
