@@ -9,7 +9,7 @@ module "webapp" {
   db_password_secret_uri = "https://${data.azurerm_key_vault.kv.name}.vault.azure.net/secrets/${azurerm_key_vault_secret.secret.name}/"
   db_name                = var.application
   subnet_id              = azurerm_subnet.webapp_subnet.id
-  #vnet_integration       = true
+  vnet_integration       = true
 
   site_config = {
     container_registry_use_managed_identity = true
