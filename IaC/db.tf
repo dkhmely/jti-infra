@@ -1,5 +1,5 @@
 module "mysql" {
-  source = "git::https://github.com/dkhmely/jti-terraform-modules.git//mysql?ref=v1.0.6"
+  source = "git::https://github.com/dkhmely/jti-terraform-modules.git//modules/mysql?ref=v1.0.6"
 
   name                       = var.application
   env                        = var.env
