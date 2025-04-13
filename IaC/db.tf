@@ -1,37 +1,17 @@
-resource "random_password" "password" {
-  length           = 16
-  special          = true
-  override_special = "!#$%&*()-_=+[]{}<>:?"
-}
+module "mysql" {
+  source = "git::https://github.com/dkhmely/jti-terraform-modules.git//mysql?ref=v1.0.6"
 
-resource "azurerm_mysql_flexible_server" "sql_server" {
-  name                   = "${var.application}${var.env}sql"
-  resource_group_name    = data.azurerm_resource_group.rg.name
-  location               = data.azurerm_resource_group.rg.location
-  administrator_login    = "${var.db_user_prefix}${var.env}user"
-  administrator_password = random_password.password.result
-  backup_retention_days  = 7
-  private_dns_zone_id    = azurerm_private_dns_zone.private_dns_zone.id
-  sku_name               = "B_Standard_B1ms"
-  zone                   = 2
-
-  storage {
-    auto_grow_enabled = true
-    iops              = 360
-    size_gb           = 20
-  }
-
-  lifecycle {
-    ignore_changes = [private_dns_zone_id]
-  }
+  name                       = var.application
+  env                        = var.env
+  location                   = data.azurerm_resource_group.rg.location
+  resource_group_name        = data.azurerm_resource_group.rg.name
+  db_user_prefix             = var.db_user_prefix
+  db_name                    = var.application
+  key_vault_id               = data.azurerm_key_vault.kv.id
+  secret_name                = "app-sql-user-password"
+  private_dns_zone_id        = azurerm_private_dns_zone.private_dns_zone.id
+  private_endpoint_subnet_id = azurerm_subnet.pep_subnet.id
+  dns_zone_name              = azurerm_private_dns_zone.private_dns_zone.name
 
   depends_on = [azurerm_private_dns_zone_virtual_network_link.dns_virtual_link]
-}
-
-resource "azurerm_mysql_flexible_database" "db" {
-  name                = var.application
-  resource_group_name = data.azurerm_resource_group.rg.name
-  server_name         = azurerm_mysql_flexible_server.sql_server.name
-  charset             = "utf8"
-  collation           = "utf8_unicode_ci"
 }
