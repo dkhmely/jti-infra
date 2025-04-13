@@ -6,7 +6,7 @@ module "webapp" {
   acr_id              = azurerm_container_registry.acr.id
   key_vault_id        = data.azurerm_key_vault.kv.id
 
-  db_host                = "${azurerm_mysql_flexible_server.sql_server.name}.mysql.database.azure.com"
+  db_host                = "${module.sql.server_name}.mysql.database.azure.com"
   db_user                = "${var.db_user_prefix}${var.env}user"
   db_password_secret_uri = "https://${data.azurerm_key_vault.kv.name}.vault.azure.net/secrets/${azurerm_key_vault_secret.secret.name}/"
   db_name                = var.application
