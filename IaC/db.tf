@@ -1,5 +1,5 @@
 module "mysql" {
-  source = "git::https://github.com/dkhmely/jti-terraform-modules.git//modules/mysql?ref=v1.0.9"
+  source = "git::https://github.com/dkhmely/jti-terraform-modules.git//modules/mysql?ref=v1.0.10"
 
   name                       = var.application
   env                        = var.env
@@ -13,5 +13,4 @@ module "mysql" {
   private_endpoint_subnet_id = azurerm_subnet.pep_subnet.id
   dns_zone_name              = azurerm_private_dns_zone.private_dns_zone.name
 
-  depends_on = [azurerm_private_dns_zone_virtual_network_link.dns_virtual_link]
 }
